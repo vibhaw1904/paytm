@@ -2,22 +2,21 @@ const { default: mongoose } = require('mongoose');
 const {Account}=require('../Models/AccountModel')
 
 const getBalance = async (req, res) => {
-    try {
-        const account = await Account.findOne({
-            userId: req.userId
-        });
-
-        if (!account) {
-            return res.status(404).json({ message: 'Account not found' });
-        }
-
-        res.json({
-            message: account.balance
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+    const account = await Account.findOne({
+        userId: req.userId,
+      })
+    
+      if (account === null) {
+        res.status(404).json({
+          message: 'Account not found',
+          userId: req.userId,
+        })
+        return
+      }
+    
+      res.status(200).json({
+        balance: account.balance,
+      })
 };
 
 

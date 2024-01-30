@@ -3,12 +3,12 @@ const  rootRouter=require('./Routes/Index')
 const dotenv=require('dotenv')
 const cors=require('cors')
 const connectDb=require('./Db/db')
-dotenv.config({path: __dirname + '/.env'}); 
+dotenv.config(); 
 const app =express();
 connectDb();
 app.use(express.urlencoded({extended:false}))
 
-app.use(cors({ origin: true, credentials: true }))
+app.use(cors())
 app.use(express.json())
 app.use('/api/v1',rootRouter);
 

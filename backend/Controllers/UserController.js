@@ -1,9 +1,9 @@
 const zod=require('zod');
 const {User}=require('../Models/UserModel');
 const jwt=require('jsonwebtoken');
-const {JWT_SECRET}=require('../config');
+// const JWT_SECRET=process.env.JWT_SECRET
 const { Account } = require('../Models/AccountModel');
-
+// console.log(JWT_SECRET)
 const signupBody=zod.object({
     username:zod.string().email(),
     firstName:zod.string(),
@@ -41,7 +41,7 @@ const registerUser=(async(req,res)=>{
 
     const token =jwt.sign({
         userId
-    },JWT_SECRET);
+    },process.env.JWT_SECRET);
 
 
 
@@ -71,7 +71,7 @@ const signInUser=(async(req,res)=>{
     if(user){
         const token =jwt.sign({
             userId:user._id
-        },JWT_SECRET)
+        },process.env.JWT_SECRET)
         res.json({
             message:"suucessfully logedIn",
             token:token

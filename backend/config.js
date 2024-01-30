@@ -1,4 +1,2 @@
-//backend/config.js
-module.exports = {
-	JWT_SECRET: "kittu1906"
-}
+
+module.exports = { JWT_SECRET:"kittu190406"};
