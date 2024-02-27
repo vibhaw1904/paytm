@@ -1,6 +1,6 @@
 const { default: mongoose } = require('mongoose');
 const {Account}=require('../Models/AccountModel')
-
+const {Request}=require('../Models/Request')
 const getBalance = async (req, res) => {
     const account = await Account.findOne({
         userId: req.userId,
@@ -18,6 +18,48 @@ const getBalance = async (req, res) => {
         balance: account.balance,
       })
 };
+
+
+const getNotification=async(req,res)=>{
+    const getNotification=await Request.findOne({
+        userId:req.recipient,
+    })
+    if(getNotification===null){
+        res.status(404).json({
+            message:"no notification found",
+            userId:req.userId
+        })
+        return 
+    }
+    res.status(200).json({
+        message:'available notification',
+        amount:getNotification.amount
+    })
+}
+const requestMoney=async(req,res)=>{
+    try {
+        const{amount,to,requesterUserId}=req.body;
+   
+        const newRequest=new Request({
+            requester:requesterUserId,
+            recipient:to,
+            amount,
+            status:'pending'
+        });
+        newRequest.save();
+        res.status(201).json({
+            message:"Request sent succesfully"
+        })
+        
+    } catch (error) {
+        console.log('error creating request',error);
+        res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
+
+
 
 
 const transferMoney = async (req, res) => {
@@ -65,4 +107,4 @@ const transferMoney = async (req, res) => {
     }
 };
 
-module.exports={getBalance,transferMoney}
+module.exports={getBalance,transferMoney,requestMoney,getNotification}

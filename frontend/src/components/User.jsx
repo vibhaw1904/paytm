@@ -19,7 +19,8 @@ const User = ({user}) => {
             </div>
         </div>
       </div>
-      <div className='flex flex-col h-full justify-center'><Button label={"Send money"} onclick={()=>navigate('/send')}/></div>
+      <div className='flex flex-col h-full justify-center'><Button label={"request money"} onClick={()=>navigate("/request?id=" + user._id + "&name= " + user.firstName)} /></div>
+      <div className='flex flex-col h-full justify-center'><Button label={"Send money"} onClick={()=>navigate("/send?id="+user._id + "&name=" + user.firstName)}/></div>
     </div>
   )
 }

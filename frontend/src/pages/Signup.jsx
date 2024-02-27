@@ -47,7 +47,9 @@ const Signup = () => {
               lastName,
               password
             });
-            localStorage.setItem("token", response.data.token)
+            localStorage.setItem('userData',JSON.stringify(response.data))
+            // localStorage.setItem("token", response.data.token)
+            console.log(response.data)
             navigate("/dashboard")
           }} label={"Signup"}></Button>
       </div>

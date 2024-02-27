@@ -45,7 +45,9 @@ const registerUser=(async(req,res)=>{
 
 
 
-    res.json({
+    res.status(201).json({
+        username:user.username,
+        _id:userId,
         message:"User created Succesfully",
         token:token
     })
@@ -73,6 +75,7 @@ const signInUser=(async(req,res)=>{
             userId:user._id
         },process.env.JWT_SECRET)
         res.json({
+            _id:user.id,
             message:"suucessfully logedIn",
             token:token
         })

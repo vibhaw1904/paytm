@@ -21,8 +21,9 @@ const SignIn = () => {
       },
     })
       const token= await res.data.token;
+      localStorage.setItem('userData',JSON.stringify(res.data))
       localStorage.setItem('token', token);
-console.log(res.data)
+      console.log(res.data)
 navigate('/dashboard')
 
     

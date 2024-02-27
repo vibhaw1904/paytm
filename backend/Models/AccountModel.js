@@ -1,15 +1,30 @@
 const mongoose=require('mongoose');
-
-const AccountSchma=mongoose.Schema({
+const AccountSchema = mongoose.Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId, // Reference to User model
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        index: true, // Index on userId
     },
     balance: {
         type: Number,
-        required: true
+        required: true,
+        default: 0, // Default value for balance
+        validate: {
+            validator: (value) => value >= 0, // Validate that balance is non-negative
+            message: 'Balance must be non-negative',
+        },
+    },
+});
+
+// Middleware to set a default balance before saving
+AccountSchema.pre('save', function (next) {
+    if (!this.balance) {
+        this.balance = 0;
     }
-})
-const Account=mongoose.model('Account',AccountSchma);
-module.exports={Account};
+    next();
+});
+
+const Account = mongoose.model('Account', AccountSchema);
+
+module.exports = { Account };
