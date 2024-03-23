@@ -1,6 +1,11 @@
-const mongoose=require('mongoose')
+const mongoose=require('mongoose');
+const { string } = require('zod');
 
 const requestSchema=new mongoose.Schema({
+    requesterName:{
+        type:String,
+        ref:'User'
+    },
     requester:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'

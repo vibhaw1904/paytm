@@ -1,6 +1,7 @@
 const { default: mongoose } = require('mongoose');
 const {Account}=require('../Models/AccountModel')
 const {Request}=require('../Models/Request')
+const jwt = require('jsonwebtoken'); 
 const getBalance = async (req, res) => {
     const account = await Account.findOne({
         userId: req.userId,
@@ -20,44 +21,63 @@ const getBalance = async (req, res) => {
 };
 
 
-const getNotification=async(req,res)=>{
-    const getNotification=await Request.findOne({
-        userId:req.recipient,
-    })
-    if(getNotification===null){
-        res.status(404).json({
-            message:"no notification found",
-            userId:req.userId
-        })
-        return 
-    }
-    res.status(200).json({
-        message:'available notification',
-        amount:getNotification.amount
-    })
-}
-const requestMoney=async(req,res)=>{
+const getNotification = async (req, res) => {
     try {
-        const{amount,to,requesterUserId}=req.body;
-   
-        const newRequest=new Request({
-            requester:requesterUserId,
-            recipient:to,
-            amount,
-            status:'pending'
-        });
-        newRequest.save();
-        res.status(201).json({
-            message:"Request sent succesfully"
-        })
-        
+        // Assuming the recipient's ID is stored in a token and extracted as 'userId'
+        const token = req.headers.authorization.split(' ')[1];
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        const recipientId = decodedToken.userId;
+        console.log(recipientId)
+        // Find all notifications where the logged-in user is the recipient
+        const notifications = await Request.find({
+            recipient: recipientId,
+            status: 'pending' // Assuming you want to find pending requests
+        }).lean(); // Use lean() for faster execution if you don't need mongoose document features
+
+        if (!notifications.length) {
+            res.status(404).json({
+                message: "No notifications found"
+            });
+        } else {
+            res.status(200).json(notifications); // Send back the array of notifications as is
+        }
     } catch (error) {
-        console.log('error creating request',error);
+        console.log('Error getting notifications:', error);
         res.status(500).json({
-            message:"internal server error"
-        })
+            message: "Internal server error"
+        });
     }
-}
+};
+
+const requestMoney = async (req, res) => {
+    try {
+        const { amount, to } = req.body;
+        const token = req.headers.authorization.split(' ')[1]; 
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET); 
+        const requesterUserId = decodedToken.userId; 
+        const requesterUsername=decodedToken.firstName;
+        // console.log(requesterUsername)
+        // console.log(requesterUserId)
+        const newRequest = new Request({
+            requesterName:requesterUsername,
+            requester: requesterUserId,
+            recipient: to,
+            amount,
+            status: 'pending'
+        });
+        await newRequest.save(); 
+        res.status(201).json({
+            requesterUsername,
+            message: "Request sent successfully"
+        });
+
+    } catch (error) {
+        console.log('error creating request', error);
+        res.status(500).json({
+            message: "internal server error"
+        });
+    }
+};
 
 
 

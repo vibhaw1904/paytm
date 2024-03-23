@@ -11,9 +11,12 @@ const RequestMoney = () => {
     const[successMessage,setSuccessMessage]=useState('');
     const reciepent=localStorage.getItem('userData')
     const recipentId=reciepent._id;
+    const requesterName=reciepent.firstName;
+    console.log(reciepent)
     const sendNotification=(e)=>{
         e.preventDefault();
-        axios.post('http://localhost:5000/api/v1/account/transfer',{
+        axios.post('http://localhost:5000/api/v1/account/request',{
+            requesterName:requesterName,
             to:id,
             amount,
             recipentId

@@ -3,7 +3,6 @@ import Appbar from '../components/Appbar'
 import Balance from '../components/Balance'
 import Users from '../components/Users'
 import axios from 'axios'
-import { Outlet } from 'react-router-dom'
 
 const Dashboard = () => {
     const[balance,setbalance]=useState(0);

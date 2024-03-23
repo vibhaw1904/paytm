@@ -72,9 +72,11 @@ const signInUser=(async(req,res)=>{
     })
     if(user){
         const token =jwt.sign({
+            firstName:user.firstName,
             userId:user._id
         },process.env.JWT_SECRET)
         res.json({
+            firstName:user.firstName,
             _id:user.id,
             message:"suucessfully logedIn",
             token:token
